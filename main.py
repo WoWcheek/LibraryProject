@@ -1,8 +1,10 @@
+from enum import Enum
+from datetime import date
 from pydantic import BaseModel
 from typing import List, Optional
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, Session
-from fastapi import FastAPI, HTTPException, Depends, APIRouter
+from fastapi import FastAPI, HTTPException, Depends, APIRouter, Query
 from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
 
 DATABASE_URL = "sqlite:///./library.db"
@@ -11,11 +13,22 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+class Gender(str, Enum):
+    male = "Male"
+    female = "Female"
+    other = "Other"
+
+class BookType(str, Enum):
+    prose = "Prose"
+    poetry = "Poetry"
+
 class AuthorDB(Base):
     __tablename__ = "authors"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     biography = Column(Text, nullable=True)
+    birth_date = Column(String, nullable=True)
+    gender = Column(String, nullable=True)
     books = relationship("BookDB", back_populates="author", cascade="all, delete")
 
 class BookDB(Base):
@@ -23,6 +36,10 @@ class BookDB(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     description = Column(Text, nullable=True)
+    pages = Column(Integer, nullable=True)
+    topic = Column(String, nullable=True)
+    book_type = Column(String, nullable=True)
+    written_on = Column(String, nullable=True)
     author_id = Column(Integer, ForeignKey("authors.id", ondelete="CASCADE"), nullable=False)
     author = relationship("AuthorDB", back_populates="books")
 
@@ -31,25 +48,39 @@ Base.metadata.create_all(bind=engine)
 class AuthorCreateRequest(BaseModel):
     name: str
     biography: Optional[str] = None
+    birth_date: Optional[date] = None
+    gender: Optional[Gender] = None
 
 class AuthorUpdateRequest(BaseModel):
     name: Optional[str] = None
     biography: Optional[str] = None
+    birth_date: Optional[date] = None
+    gender: Optional[Gender] = None
 
 class BookCreateRequest(BaseModel):
     title: str
-    author_id: int
     description: Optional[str] = None
+    pages: Optional[int] = None
+    topic: Optional[str] = None
+    book_type: Optional[BookType] = None
+    written_on: Optional[date] = None
+    author_id: int
 
 class BookUpdateRequest(BaseModel):
     title: Optional[str] = None
-    author_id: Optional[int] = None
     description: Optional[str] = None
+    pages: Optional[int] = None
+    topic: Optional[str] = None
+    book_type: Optional[BookType] = None
+    written_on: Optional[date] = None
+    author_id: Optional[int] = None
 
 class AuthorResponse(BaseModel):
     id: int
     name: str
     biography: Optional[str]
+    birth_date: Optional[date]
+    gender: Optional[Gender]
 
     class Config:
         orm_mode = True
@@ -58,6 +89,10 @@ class BookResponse(BaseModel):
     id: int
     title: str
     description: Optional[str]
+    pages: Optional[int]
+    topic: Optional[str]
+    book_type: Optional[BookType]
+    written_on: Optional[date]
     author_id: int
 
     class Config:
@@ -117,6 +152,16 @@ def delete_author(author_id: int, db: Session = Depends(get_db)):
 @books_router.get("/", response_model=List[BookResponse])
 def get_books(db: Session = Depends(get_db)):
     return db.query(BookDB).all()
+
+@books_router.get("/filter", response_model=List[BookResponse])
+def get_books_by_author_ids(
+    author_ids: List[int] = Query(..., description="List of author IDs to filter books by"),
+    db: Session = Depends(get_db)
+):
+    books = db.query(BookDB).filter(BookDB.author_id.in_(author_ids)).all()
+    if not books:
+        raise HTTPException(status_code=404, detail="No books found for the provided author IDs.")
+    return books
 
 @books_router.get("/{book_id}", response_model=BookResponse)
 def get_book(book_id: int, db: Session = Depends(get_db)):
