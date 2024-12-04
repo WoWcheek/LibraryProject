@@ -14,15 +14,6 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 class Gender(str, Enum):
     male = "Male"
     female = "Female"
@@ -95,7 +86,6 @@ class AuthorResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class BookResponse(BaseModel):
     id: int
     title: str
@@ -109,7 +99,6 @@ class BookResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 def get_db():
     db = SessionLocal()
     try:
@@ -118,6 +107,14 @@ def get_db():
         db.close()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 books_router = APIRouter(prefix="/books", tags=["Books"])
 authors_router = APIRouter(prefix="/authors", tags=["Authors"])
