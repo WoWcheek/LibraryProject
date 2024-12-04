@@ -4,6 +4,7 @@ import AddBookForm from "./components/AddBookForm";
 import AddAuthorForm from "./components/AddAuthorForm";
 import ViewBooks from "./components/ViewBooks";
 import ViewAuthors from "./components/ViewAuthors";
+import SearchBooksByAuthor from "./components/SearchBooksByAuthor";
 
 
 const App = () => {
@@ -19,6 +20,8 @@ const App = () => {
         return <ViewBooks/>; 
       case "viewAuthors":
         return <ViewAuthors/>; 
+      case "searchBooksByAuthor":
+        return <SearchBooksByAuthor/>; 
       default:
         return null;
     }

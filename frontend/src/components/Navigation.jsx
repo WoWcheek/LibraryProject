@@ -8,6 +8,7 @@ const Navigation = ({ onNavigate }) => {
       <button onClick={() => onNavigate("addAuthor")}>Додати нового автора</button>
       <button onClick={() => onNavigate("viewBooks")}>Переглянути всі книги</button>
       <button onClick={() => onNavigate("viewAuthors")}>Переглянути всіх авторів</button>
+      <button onClick={() => onNavigate("searchBooksByAuthor")}>Пошук книги по автору</button>
     </div>
   );
 };

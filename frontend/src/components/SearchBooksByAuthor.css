@@ -1,0 +1,80 @@
+.search-books {
+    width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #2c2c2c;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-books h2 {
+    color: #f1f0f0;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .search-books form {
+    margin-bottom: 2rem;
+  }
+  
+  .search-books label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: small;
+    font-weight: bold;
+    color: #f1f0f0;
+  }
+  
+  .search-books input {
+    width: calc(100% - 2rem);
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .search-books button {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #3f4750;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-books button:hover {
+    background-color: #2f343a;
+  }
+  
+  .books-list .card {
+    width: 95%;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #c9bbbb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+  }
+  
+  .books-list .card h3 {
+    margin-bottom: 0.5rem;
+    color: #312828;
+  }
+  
+  .books-list .card p {
+    margin: 0.5rem 0;
+    color: #312828;
+    font-size: 0.9rem;
+  }
+  
+  .error {
+    color: #ff5555;
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
