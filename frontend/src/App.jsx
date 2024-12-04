@@ -1,21 +1,33 @@
 import React, { useState } from "react";
+import Navigation from "./components/Navigation";
 import AddBookForm from "./components/AddBookForm";
 
 const App = () => {
-    const [books, setBooks] = useState([]);
+  const [view, setView] = useState("addBook");
 
-    const handleBookAdded = (newBook) => {
-        setBooks([...books, newBook]);
-    };
+  const renderView = () => {
+    switch (view) {
+      case "addBook":
+        return <AddBookForm />;
+      case "addAuthor":
+        return <div>Форма додавання автора</div>; // Додайте форму для авторів тут
+      case "viewBooks":
+        return <div>Список книг</div>; // Додайте компонент для перегляду книг
+      case "viewAuthors":
+        return <div>Список авторів</div>; // Додайте компонент для перегляду авторів
+      default:
+        return null;
+    }
+  };
 
-    return (
-        <div>
-            <h1>Бібліотека</h1>
-            <AddBookForm onBookAdded={handleBookAdded} />
-            <h2>Список книг</h2>
-            {/* Тут буде компонент для списку книг */}
-        </div>
-    );
+  return (
+    <div style={{ display: "flex" }}>
+      <Navigation onNavigate={setView} />
+      <div style={{ marginLeft: "220px", padding: "1rem", width: "100%" }}>
+        {renderView()}
+      </div>
+    </div>
+  );
 };
 
 export default App;

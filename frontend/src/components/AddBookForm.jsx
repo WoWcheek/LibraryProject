@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { addBook } from "../services/api"; 
+import { addBook } from "../services/api";
+import "./AddBookForm.css";
 
 const AddBookForm = () => {
   const [formData, setFormData] = useState({
@@ -7,7 +8,7 @@ const AddBookForm = () => {
     description: "",
     pages: "",
     topic: "",
-    type: "prose",
+    type: "Prose",
     date: "",
     author: "",
   });
@@ -25,17 +26,17 @@ const AddBookForm = () => {
       const response = await addBook({
         title: formData.title,
         description: formData.description,
-        pages: parseInt(formData.pages, 10), // Приведення до числа
+        pages: parseInt(formData.pages, 10),
         topic: formData.topic,
-        book_type: formData.type,
-        written_on: formData.date,
-        author_id: parseInt(formData.author, 10), // Приведення до числа
+        type: formData.type,
+        date: formData.date,
+        author_id: parseInt(formData.author, 10),
       });
       alert("Книга успішно додана!");
       console.log(response);
     } catch (error) {
-      console.error("Помилка при додаванні книги:", error);
       alert("Помилка при додаванні книги.");
+      console.error(error);
     }
   };
 
@@ -43,74 +44,73 @@ const AddBookForm = () => {
     <div className="card">
       <h2>Додати книгу</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Назва:</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          required
-        />
-
-        <label htmlFor="description">Опис:</label>
-        <input
-          type="text"
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="pages">Кількість сторінок:</label>
-        <input
-          type="number"
-          id="pages"
-          name="pages"
-          value={formData.pages}
-          onChange={handleChange}
-          required
-        />
-
-        <label htmlFor="topic">Тема:</label>
-        <input
-          type="text"
-          id="topic"
-          name="topic"
-          value={formData.topic}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="type">Тип книги:</label>
-        <select
-          id="type"
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-        >
-          <option value="prose">Проза</option>
-          <option value="poetry">Поезія</option>
-        </select>
-
-        <label htmlFor="date">Дата написання:</label>
-        <input
-          type="date"
-          id="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="author">ID автора:</label>
-        <input
-          type="number"
-          id="author"
-          name="author"
-          value={formData.author}
-          onChange={handleChange}
-          required
-        />
-
+        <div>
+          <label>Назва:</label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Опис:</label>
+          <input
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Кількість сторінок:</label>
+          <input
+            type="number"
+            name="pages"
+            value={formData.pages}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Тема:</label>
+          <input
+            type="text"
+            name="topic"
+            value={formData.topic}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Тип книги:</label>
+          <select
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+          >
+            <option value="prose">Проза</option>
+            <option value="poetry">Поезія</option>
+          </select>
+        </div>
+        <div>
+          <label>Дата написання:</label>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>ID автора:</label>
+          <input
+            type="number"
+            name="author"
+            value={formData.author}
+            onChange={handleChange}
+            required
+          />
+        </div>
         <button type="submit">Додати</button>
       </form>
     </div>
