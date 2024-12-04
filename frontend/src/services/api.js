@@ -44,3 +44,13 @@ export const addAuthor = async (author) => {
       throw error;
     }
   };
+
+  export const getAuthors = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/authors/`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching authors:", error);
+      throw error;
+    }
+  };

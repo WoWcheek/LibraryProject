@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Navigation from "./components/Navigation";
 import AddBookForm from "./components/AddBookForm";
 import AddAuthorForm from "./components/AddAuthorForm";
+import ViewBooks from "./components/ViewBooks";
+import ViewAuthors from "./components/ViewAuthors";
 
 
 const App = () => {
@@ -14,9 +16,9 @@ const App = () => {
       case "addAuthor":
         return <AddAuthorForm />; 
       case "viewBooks":
-        return <div>Список книг</div>; 
+        return <ViewBooks/>; 
       case "viewAuthors":
-        return <div>Список авторів</div>; 
+        return <ViewAuthors/>; 
       default:
         return null;
     }
