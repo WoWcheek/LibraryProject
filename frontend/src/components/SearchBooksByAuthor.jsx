@@ -16,6 +16,7 @@ const SearchBooksByAuthor = () => {
     } catch (err) {
       setError("Книги не знайдено або сталася помилка.");
       console.error(err);
+      setBooks([]);
     }
   };
 
