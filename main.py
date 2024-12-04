@@ -2,16 +2,26 @@ from enum import Enum
 from datetime import date
 from pydantic import BaseModel
 from typing import List, Optional
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, Session
 from fastapi import FastAPI, HTTPException, Depends, APIRouter, Query
 from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
+from fastapi.middleware.cors import CORSMiddleware
 
 DATABASE_URL = "sqlite:///./library.db"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Gender(str, Enum):
     male = "Male"
@@ -83,7 +93,8 @@ class AuthorResponse(BaseModel):
     gender: Optional[Gender]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class BookResponse(BaseModel):
     id: int
@@ -96,7 +107,8 @@ class BookResponse(BaseModel):
     author_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 def get_db():
     db = SessionLocal()
