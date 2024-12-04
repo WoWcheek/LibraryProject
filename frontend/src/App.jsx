@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Navigation from "./components/Navigation";
 import AddBookForm from "./components/AddBookForm";
+import AddAuthorForm from "./components/AddAuthorForm";
+
 
 const App = () => {
   const [view, setView] = useState("addBook");
@@ -10,11 +12,11 @@ const App = () => {
       case "addBook":
         return <AddBookForm />;
       case "addAuthor":
-        return <div>Форма додавання автора</div>; // Додайте форму для авторів тут
+        return <AddAuthorForm />; 
       case "viewBooks":
-        return <div>Список книг</div>; // Додайте компонент для перегляду книг
+        return <div>Список книг</div>; 
       case "viewAuthors":
-        return <div>Список авторів</div>; // Додайте компонент для перегляду авторів
+        return <div>Список авторів</div>; 
       default:
         return null;
     }

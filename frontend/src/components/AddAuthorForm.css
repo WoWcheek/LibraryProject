@@ -1,7 +1,7 @@
 .card {
-    width: 800px;     
-    margin: 0.5rem;
-    padding: 2rem;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
     background-color: #3f3939;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -19,32 +19,32 @@
   .card label {
     display: block;
     margin-top: 1rem;
-    font-size: small;
     font-weight: 500;
     color: #f1f0f0;
   }
   
   .card input,
-  .card select {
-    width: calc(100% - 2rem);
+  .card select,
+  .card textarea,
+  .card button {
+    width: calc(100% - 20px);
     padding: 0.5rem;
-    margin-top: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .card textarea {
+    resize: none;
   }
   
   .card button {
-    margin-top: 1rem;
-    width: 100%;
-    padding: 0.7rem;
     background-color: #3f4750;
     color: white;
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
   }
   
   .card button:hover {

@@ -34,3 +34,13 @@ export const searchBooksByAuthor = async (authorId) => {
         throw error;
     }
 };
+
+export const addAuthor = async (author) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/authors/`, author);
+      return response.data;
+    } catch (error) {
+      console.error("Error adding author:", error);
+      throw error;
+    }
+  };
