@@ -41,7 +41,7 @@ const AddBookForm = () => {
   };
 
   return (
-    <div className="card">
+    <div className="card" style={{marginLeft: '20px'}}>
       <h2>Додати книгу</h2>
       <form onSubmit={handleSubmit}>
         <div>

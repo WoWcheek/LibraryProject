@@ -21,7 +21,7 @@ const SearchBooksByAuthor = () => {
   };
 
   return (
-    <div className="search-books">
+    <div className="search-books" style={{marginLeft: '20px'}}>
       <h2>Пошук книг за автором</h2>
       <form onSubmit={handleSearch}>
         <div>

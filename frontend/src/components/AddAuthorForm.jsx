@@ -35,7 +35,7 @@ const AddAuthorForm = () => {
   };
 
   return (
-    <div className="card">
+    <div className="card" style={{marginLeft: '20px'}}>
       <h2>Додати автора</h2>
       <form onSubmit={handleSubmit}>
         <div>
