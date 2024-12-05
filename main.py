@@ -282,26 +282,6 @@ def sign_in(user_request: UserRequest, db: Session = Depends(get_db)):
     db.refresh(user)
     return user
 
-<<<<<<< HEAD
-
-=======
-@app.middleware("http")
-async def auth_middleware(request: Request, call_next):
-    if request.url.path.startswith(("/authorization", "/docs", "/openapi.json")):
-        return await call_next(request)
-    authorization = request.headers.get("Authorization")
-    if not authorization:
-        return JSONResponse(content={"detail": "Authorization header missing"}, status_code=401)
-    token = authorization.split(" ")[1]
-    db = SessionLocal()
-    user = db.query(UserDB).filter(UserDB.token == token).first()
-    if not user:
-        return JSONResponse(content={"detail": "Invalid or expired token"}, status_code=401)
-    response = await call_next(request)
-    db.close()
-    return response
->>>>>>> fb821a18b06ec151e7abd47c2512b066b94c8358
-
 app.include_router(auth_router)
 app.include_router(books_router)
 app.include_router(authors_router)
