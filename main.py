@@ -1,12 +1,15 @@
 from enum import Enum
+from uuid import uuid4
 from datetime import date
 from pydantic import BaseModel
 from typing import List, Optional
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship, Session
-from fastapi import FastAPI, HTTPException, Depends, APIRouter, Query
-from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import sessionmaker, relationship, Session
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
+from fastapi import FastAPI, HTTPException, Depends, APIRouter, Query, Request
 
 DATABASE_URL = "sqlite:///./library.db"
 
@@ -107,6 +110,23 @@ def get_db():
         db.close()
 
 app = FastAPI()
+
+
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    if request.url.path.startswith(("/authorization", "/docs", "/openapi.json")):
+        return await call_next(request)
+    authorization = request.headers.get("Authorization")
+    if not authorization:
+        return JSONResponse(content={"detail": "Authorization header missing"}, status_code=401)
+    token = authorization.split(" ")[1]
+    db = SessionLocal()
+    user = db.query(UserDB).filter(UserDB.token == token).first()
+    if not user:
+        return JSONResponse(content={"detail": "Invalid or expired token"}, status_code=401)
+    response = await call_next(request)
+    db.close()
+    return response
 
 app.add_middleware(
     CORSMiddleware,
@@ -210,5 +230,78 @@ def delete_book(book_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Book deleted."}
 
+class UserDB(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
+    token = Column(String, unique=True, nullable=True)
+
+Base.metadata.create_all(bind=engine)
+
+class UserRequest(BaseModel):
+    username: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    token: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+auth_router = APIRouter(prefix="/authorization", tags=["Authorization"])
+security = HTTPBearer()
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    token = credentials.credentials
+    user = db.query(UserDB).filter(UserDB.token == token).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid or missing token.")
+    return user
+
+@auth_router.post("/signup", response_model=UserResponse)
+def sign_up(user_request: UserRequest, db: Session = Depends(get_db)):
+    existing_user = db.query(UserDB).filter(UserDB.username == user_request.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already exists.")
+    new_user = UserDB(username=user_request.username, password=user_request.password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+@auth_router.post("/signin", response_model=UserResponse)
+def sign_in(user_request: UserRequest, db: Session = Depends(get_db)):
+    user = db.query(UserDB).filter(UserDB.username == user_request.username, UserDB.password == user_request.password).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid username or password.")
+    user.token = str(uuid4())
+    db.commit()
+    db.refresh(user)
+    return user
+
+<<<<<<< HEAD
+
+=======
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    if request.url.path.startswith(("/authorization", "/docs", "/openapi.json")):
+        return await call_next(request)
+    authorization = request.headers.get("Authorization")
+    if not authorization:
+        return JSONResponse(content={"detail": "Authorization header missing"}, status_code=401)
+    token = authorization.split(" ")[1]
+    db = SessionLocal()
+    user = db.query(UserDB).filter(UserDB.token == token).first()
+    if not user:
+        return JSONResponse(content={"detail": "Invalid or expired token"}, status_code=401)
+    response = await call_next(request)
+    db.close()
+    return response
+>>>>>>> fb821a18b06ec151e7abd47c2512b066b94c8358
+
+app.include_router(auth_router)
 app.include_router(books_router)
 app.include_router(authors_router)

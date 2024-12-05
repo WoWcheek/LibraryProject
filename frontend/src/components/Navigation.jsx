@@ -9,6 +9,7 @@ const Navigation = ({ onNavigate }) => {
       <button onClick={() => onNavigate("viewBooks")}>Переглянути всі книги</button>
       <button onClick={() => onNavigate("viewAuthors")}>Переглянути всіх авторів</button>
       <button onClick={() => onNavigate("searchBooksByAuthor")}>Пошук книги по автору</button>
+      <button onClick={() => onNavigate("loginForm")}>Авторизація</button>
     </div>
   );
 };
